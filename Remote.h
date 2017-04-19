@@ -8,8 +8,8 @@
 #else
 	#include "WProgram.h"
 #endif
-enum Mode { OFF, HEAT, COOL };
-enum Fan { AUTO, FAN1, FAN2, FAN3, FAN4, FAN5 };
+enum Mode { OFF=0, HEAT, COOL };
+enum Fan { AUTO=0, FAN1, FAN2, FAN3, FAN4, FAN5,FAN6 };
 class Remote
 {
 public:
@@ -18,7 +18,7 @@ public:
 protected:
 	IRSender sender;
 public:	
-	virtual void set(Mode mode, Fan fan, ushort temp);
+	virtual void set(Mode mode, Fan fan, byte temp);
 };
 
 #endif

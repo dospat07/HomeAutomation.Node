@@ -15,10 +15,7 @@
 		 
 	};
 	
-	void Daikin::set(Mode, Fan, ushort temp)
-	{
-
-	}
+	
 	/* 
 	https://jamesstewy.com/blog/post/8/
 	O M M M F F F F  P T T T T T T T 0
@@ -54,15 +51,71 @@
 	23c = 010111 reversed = 111010 58
 	24c = 011000 reversed = 000110  6
 	*/
+
+	void Daikin::set(Mode mode, Fan fan, byte temp)
+	{
+		byte _mode = B10000000;
+		switch (mode)
+		{
+		case OFF:_mode =  B00000000;
+			break;
+		case HEAT:_mode = B10000010;
+			break;
+		case COOL:_mode = B10001100;
+			break;
+		default:
+			break;
+		}
+		/*  ON/OF		*/
+		this->message[21] = this->message[21] & B01111111; // clear 
+		this->message[21] = this->message[21] | (B10000000 & _mode);
+
+		/*  MODE        */
+		this->message[21] = this->message[21] & B11110001; // clear 
+		this->message[21] = this->message[21] | (B00001110 & _mode);
+
+		byte _fan = B01010000;
+		switch (fan)
+		{
+		case AUTO:_fan = B01010000;
+			break;
+		case FAN1:_fan = B11010000;
+			break;
+		case FAN2:_fan = B11000000;
+			break;
+		case FAN3:_fan = B00100000;
+			break;
+		case FAN4:_fan = B10100000;
+			break;
+		case FAN5:_fan = B01100000;
+			break;
+		case FAN6:_fan = B11100000;
+			break;
+		default:
+			break;
+		}	
+		/*  FAN			*/
+		this->message[24] = this->message[24] & B11110000; // clear 
+		this->message[24] = this->message[24] | (B00001111 & _fan);
+
+		/*  Tempertature*/
+		this->message[22] = reverse(temp)>>2;
+
+		/*  Powerfull   */
+		//this->message[29] = this->message[29] & B01111111; // clear 
+		//this->message[29] = this->message[29] | (B10000000 & data);
+		this->calcCRC(16, 18);
+		this->send();
+	}
 	void Daikin::prepareMessage(uint16_t data)
 	{
 		uint8_t byte =data>>8;
 		/*  ON/OF		*/
-		this->message[21] = this->message[21] & B01111111;
+		this->message[21] = this->message[21] & B01111111; // clear 
 		this->message[21] = this->message[21] | (B10000000 & byte);
 
 		/*  MODE        */	
-		this->message[21] = this->message[21] & B11110001;
+		this->message[21] = this->message[21] & B11110001; // clear 
 		this->message[21] = this->message[21] | (B00001110 & (byte >> 3));	
 
 		/*  Tempertature*/
@@ -73,17 +126,11 @@
 		this->message[24] = this->message[24] | (B00001111 & byte);
 
 		/*  Powerfull   */
-		this->message[29] = this->message[29] & B01111111;
+		this->message[29] = this->message[29] & B01111111; // clear 
 		this->message[29] = this->message[29] | (B10000000 & data);
 
-	
-
 		this->calcCRC(16, 18);
-	/*	for (uint8_t i = 0; i < 35; i++)
-		{
-			Serial.print(i); Serial.print(" : ");
-			Serial.println(this->message[i]);
-		}*/
+		
 	}
 
 	uint8_t Daikin::reverse(uint8_t byte)
@@ -116,9 +163,9 @@
 
 	}
 
-	void Daikin::send(uint16_t data)
+	void Daikin::send()
 	{
-		prepareMessage(data);
+		 
 		sender.enableIROut(38);
 
 		sender.mark(DAIKIN_BIT_MARK);
@@ -130,6 +177,12 @@
 		sendPart(this->message, 8, 8);
 		delay(DAIKIN_HDR_DELAY_MS);
 		sendPart(this->message, 16, 19);
+	}
+
+	void Daikin::send(uint16_t data)
+	{
+		prepareMessage(data);
+		send();
 	}
 
 	void Daikin::sendPart(void* data, uint8_t position, uint8_t lenght)

@@ -9,7 +9,7 @@ Toshiba::Toshiba(int IRpin) :message(
 {
 }
 
-void Toshiba::set(Mode, Fan, ushort temp)
+void Toshiba::set(Mode mode, Fan fan,byte temp)
 {
 
 }
@@ -51,12 +51,16 @@ void Toshiba::prepareMessage(uint16_t data)
 void Toshiba::send(uint16_t data)
 {
 	prepareMessage(data);
+	send();
+}
+void Toshiba::send()
+{
+	 
 	sender.enableIROut(38);
 	sendPart();
 	delayMicroseconds(TOSHIBA_HDR_DELAY);
 	sendPart();
 }
-
 void Toshiba::sendPart( )
 {
 	sender.mark(TOSHIBA_HDR_MARK);

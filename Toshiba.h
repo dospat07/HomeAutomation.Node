@@ -19,11 +19,11 @@ class Toshiba:public Remote
 public:
 
 	Toshiba(int IRpin);	
-	void set(Mode, Fan, ushort temp);
+	void set(Mode mode, Fan fan, byte temp);
 	void send(uint16_t data);
 
 private:
-	 
+	void send();
 	uint8_t message[13];
 	void prepareMessage(uint16_t data);
 	void sendPart();

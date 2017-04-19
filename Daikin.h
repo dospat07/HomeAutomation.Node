@@ -24,10 +24,10 @@ class Daikin :public Remote
 public:
 
 	Daikin(int IRpin);
-	void set(Mode, Fan, ushort temp);
+	void set(Mode, Fan, byte temp);
 	void send(uint16_t data);
 private :
-	
+	void send();
 	uint8_t message[35];
 	void prepareMessage(uint16_t data);
 	void sendPart(void* data, uint8_t position, uint8_t lenght);
