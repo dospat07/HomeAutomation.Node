@@ -5,7 +5,8 @@
 #include "WProgram.h"
 #endif
 #include "stdint.h"
-#include "IRSender.h"
+
+#include "Remote.h"
 
 #define DAIKIN_HDR_MARK	    3400
 #define DAIKIN_HDR_SPACE	1600
@@ -18,23 +19,23 @@
 #define DAIKIN_START_DELAY_MS 25 
 
  
-class Daikin  : public IRSender
+class Daikin :public Remote 
 {
 public:
-	Daikin();
-	~Daikin();
-	 
-	
-	void send(uint16_t data);
-	
 
+	Daikin(int IRpin);
+	void set(Mode, Fan, ushort temp);
+	void send(uint16_t data);
 private :
+	
 	uint8_t message[35];
-	void calcCRC(uint8_t start, uint8_t len);
-	uint8_t reverse(uint8_t byte);
+	void prepareMessage(uint16_t data);
 	void sendPart(void* data, uint8_t position, uint8_t lenght);
 	void sendByte(uint8_t byte);
-	void prepareMessage(uint16_t data);
+	void calcCRC(uint8_t start, uint8_t len);
+	uint8_t reverse(uint8_t byte);
+	
+	
 };
 
 

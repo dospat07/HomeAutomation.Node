@@ -1,8 +1,6 @@
-#include "Daikin.h"
+	#include "Daikin.h"
  
-
-
-	Daikin::Daikin() : message(
+	Daikin::Daikin(int IRpin) : message(
 	{
 
 		  0x88, 0x5B, 0xE4, 0x00, 0xA3, 0x00, 0x00, 0xEB, 
@@ -12,81 +10,14 @@
 		0x88, 0x5B, 0xE4, 0x00, 0xA3, 0x00, 0x00, 0xEB,
 		0x88, 0x5B, 0xE4, 0x00, 0x42, 0x23, 0x80, 0x98,
 		0x88, 0x5B, 0xE4, 0x00, 0x00, 0x92, 0x44, 0x00, 0x05, 0x00, 0x00, 0x60, 0x06, 0x00, 0x00, 0x03, 0x00, 0x00, 0xC2 */
-	})
+	}), Remote(IRpin)
 	{
-	};
-	Daikin::~Daikin()
-	{
-
-	};
-
-	void Daikin::send(uint16_t data)
-	{
-		prepareMessage(data);
-		enableIROut(38);
-
-		/*for (int i = 0; i < 5; i++)
-		{
-		sendDaikinBit(0);
-		}*/
-		mark(DAIKIN_BIT_MARK);
-
-		delay(DAIKIN_START_DELAY_MS);
-
-		sendPart(this->message, 0, 8);
-		delay(DAIKIN_HDR_DELAY_MS);
-		sendPart(this->message, 8, 8);
-		delay(DAIKIN_HDR_DELAY_MS);
-		sendPart(this->message, 16, 19);
-	}
-
-	void Daikin::sendPart(void* data, uint8_t position, uint8_t lenght)
-	{
-		mark(DAIKIN_HDR_MARK);
-		space(DAIKIN_HDR_SPACE);
-		for (int i = position; i <position + lenght; i++)
-		{
-			sendByte(((uint8_t*)data)[i]);
-		}
-		mark(DAIKIN_BIT_MARK);
-	}
-
-
-	void Daikin::sendByte(uint8_t byte)
-	{
-		for (int i = 0; i < 8; i++)
-		{
-
-
-			if ((byte & 0x80)>0) {
-
-
-				mark(DAIKIN_BIT_MARK);
-				space(DAIKIN_ONE_SPACE);
-			}
-			else {
-
-				mark(DAIKIN_BIT_MARK);
-				space(DAIKIN_ZERO_SPACE);
-			}
-			byte = byte << 1;
-		}
-	}
-	void Daikin::calcCRC(uint8_t start, uint8_t len)
-	{
-		uint16_t crc = 0;
-		for (uint8_t i = start; i < start+len; i++)
-		{
-			
-			crc += this->reverse(this->message[i]);
 		 
-		
-		}
-		
-	/*	Serial.print("crc  ");
-		Serial.println(crc);*/
-		this->message[start + len] = this->reverse(crc);
-		
+	};
+	
+	void Daikin::set(Mode, Fan, ushort temp)
+	{
+
 	}
 	/* 
 	https://jamesstewy.com/blog/post/8/
@@ -182,6 +113,71 @@
 		}
 		return reversed;
 
+
+	}
+
+	void Daikin::send(uint16_t data)
+	{
+		prepareMessage(data);
+		sender.enableIROut(38);
+
+		sender.mark(DAIKIN_BIT_MARK);
+
+		delay(DAIKIN_START_DELAY_MS);
+
+		sendPart(this->message, 0, 8);
+		delay(DAIKIN_HDR_DELAY_MS);
+		sendPart(this->message, 8, 8);
+		delay(DAIKIN_HDR_DELAY_MS);
+		sendPart(this->message, 16, 19);
+	}
+
+	void Daikin::sendPart(void* data, uint8_t position, uint8_t lenght)
+	{
+		sender.mark(DAIKIN_HDR_MARK);
+		sender.space(DAIKIN_HDR_SPACE);
+		for (int i = position; i <position + lenght; i++)
+		{
+			sendByte(((uint8_t*)data)[i]);
+		}
+		sender.mark(DAIKIN_BIT_MARK);
+	}
+
+
+	void Daikin::sendByte(uint8_t byte)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+
+
+			if ((byte & 0x80)>0) {
+
+
+				sender.mark(DAIKIN_BIT_MARK);
+				sender.space(DAIKIN_ONE_SPACE);
+			}
+			else {
+
+				sender.mark(DAIKIN_BIT_MARK);
+				sender.space(DAIKIN_ZERO_SPACE);
+			}
+			byte = byte << 1;
+		}
+	}
+	void Daikin::calcCRC(uint8_t start, uint8_t len)
+	{
+		uint16_t crc = 0;
+		for (uint8_t i = start; i < start + len; i++)
+		{
+
+			crc += this->reverse(this->message[i]);
+
+
+		}
+
+		/*	Serial.print("crc  ");
+		Serial.println(crc);*/
+		this->message[start + len] = this->reverse(crc);
 
 	}
 	 

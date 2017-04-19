@@ -5,6 +5,7 @@
 #include "WProgram.h"
 #endif
 #include "IRSender.h"
+#include "Remote.h"
 
 #define TOSHIBA_HDR_MARK	4500
 #define TOSHIBA_HDR_SPACE	4450
@@ -13,15 +14,16 @@
 #define TOSHIBA_ZERO_SPACE	500
 #define TOSHIBA_HDR_DELAY   5400
 
-class Toshiba :
-	public IRSender
+class Toshiba:public Remote	
 {
 public:
-	Toshiba();
-	~Toshiba();
-	
+
+	Toshiba(int IRpin);	
+	void set(Mode, Fan, ushort temp);
 	void send(uint16_t data);
+
 private:
+	 
 	uint8_t message[13];
 	void prepareMessage(uint16_t data);
 	void sendPart();

@@ -4,6 +4,8 @@
  Author:	ivo
 */
 
+#include "RemoteFactory.h"
+ 
 #include <DallasTemperature.h>
 #include <OneWire.h>
 #include <ESP8266WebServer.h>
@@ -13,6 +15,7 @@
 const char *ssid = "SSID1";
 const char *password = "7402186329";
 Engine engine(80, 5);
+
 void setup() {
 	Serial.begin(115200);
 	WiFi.begin(ssid, password);

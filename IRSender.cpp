@@ -1,48 +1,65 @@
 #include "IRSender.h"
 
 
-IRSender::IRSender()
-{
+IRtimer::IRtimer() {
+	reset();
+}
 
+void ICACHE_FLASH_ATTR IRtimer::reset() {
+	start = micros();
+}
+
+uint32_t ICACHE_FLASH_ATTR IRtimer::elapsed() {
+	uint32_t now = micros();
+	if (start <= now)  // Check if the system timer has wrapped.
+		return (now - start);  // No wrap.
+	else
+		return (0xFFFFFFFF - start + now);  // Has wrapped.
 }
 
 
-IRSender::~IRSender()
-{
-}
 
- 
 
-void IRSender::mark(int time) {
+
+
+void ICACHE_FLASH_ATTR IRSender::mark(unsigned int usec) {
 	// Sends an IR mark for the specified number of microseconds.
 	// The mark output is modulated at the PWM frequency.
-	TIMER_ENABLE_PWM; // Set SMCLK, Up mode
-	delayMicroseconds(time);
-	TIMER_DISABLE_PWM;
-	
+	IRtimer usecTimer = IRtimer();
+	while (usecTimer.elapsed() < usec) {
+		digitalWrite(IRpin, HIGH);
+		delayMicroseconds(halfPeriodicTime);
+		digitalWrite(IRpin, LOW);
+		// e.g. 38 kHz -> T = 26.31 microsec (periodic time), half of it is 13
+		delayMicroseconds(halfPeriodicTime);
+	}
+
 }
 
 /* Leave pin off for time (given in microseconds) */
-void IRSender::space(int time) {
+void ICACHE_FLASH_ATTR IRSender::space(unsigned long time) {
 	// Sends an IR space for the specified number of microseconds.
 	// A space is no output, so the PWM output is disabled.
-	TIMER_DISABLE_PWM; // Set SMCLK, Stop mode
-	delayMicroseconds(time);
+	//ledOff();
+
+	digitalWrite(IRpin, LOW);
+	if (time == 0) return;
+	if (time <= 16383)  // delayMicroseconds is only accurate to 16383us.
+		delayMicroseconds(time);
+	else {
+		// Invoke a delay(), where possible, to avoid triggering the WDT.
+		delay(time / 1000UL);  // Delay for as many whole ms as we can.
+		delayMicroseconds((int)time % 1000UL);  // Delay the remaining sub-msecond.
+	}
 }
 
 
-void IRSender::enableIROut(int khz) {
+void ICACHE_FLASH_ATTR IRSender::enableIROut(int khz) {
 
-	// Disable the Timer_A Interrupt (which is used for receiving IR)
-	//TIMER_DISABLE_INTR; //Timer_A Overflow Interrupt
+	// Enables IR output.
+	// The khz value controls the modulation frequency in kilohertz.
 
-	TIMER_PIN_SELECT(); // P2.3 output and P2.3 option select (when TIMER_PWM_PIN is P2_3)
-
-
-	// COM2B = 00: disconnect OC2B; to send signal set to 10: OC2B non-inverted
-	// WGM2 = 101: phase-correct PWM with OCRA as top
-	// CS2 = 000: no prescaling
-	// The top value for the timer.  The modulation frequency will be SYSCLOCK / 2 / OCR2A.
-	TIMER_CONFIG_KHZ(khz);
+	// T = 1/f but we need T/2 in microsecond and f is in kHz
+	halfPeriodicTime = 500 / khz;
 }
 

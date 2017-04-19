@@ -1,19 +1,19 @@
 #include "Toshiba.h"
 
-
-Toshiba::Toshiba() :message(
+Toshiba::Toshiba(int IRpin) :message(
 {
 	//0xF2, 0x0D, 0x03, 0xFC, 0x01, 0x51, 0x03, 0x00, 0x53 //Heat22Auto
-	 
+
 	0xF2, 0x0D, 0x07, 0xF8, 0x01, 0x74, 0x07, 0x00, 0x55, 0x3C, 0x01, 0x02, 0x18 //OFF
-})
+}),Remote(IRpin)
 {
 }
 
-
-Toshiba::~Toshiba()
+void Toshiba::set(Mode, Fan, ushort temp)
 {
+
 }
+
 //
 // data
 // FF0000MM TTTTTTTT
@@ -51,7 +51,7 @@ void Toshiba::prepareMessage(uint16_t data)
 void Toshiba::send(uint16_t data)
 {
 	prepareMessage(data);
-	enableIROut(38);
+	sender.enableIROut(38);
 	sendPart();
 	delayMicroseconds(TOSHIBA_HDR_DELAY);
 	sendPart();
@@ -59,13 +59,13 @@ void Toshiba::send(uint16_t data)
 
 void Toshiba::sendPart( )
 {
-	mark(TOSHIBA_HDR_MARK);
-	space(TOSHIBA_HDR_SPACE);
+	sender.mark(TOSHIBA_HDR_MARK);
+	sender.space(TOSHIBA_HDR_SPACE);
 	for (int i = 0; i <this->lenght; i++)
 	{
 		sendByte(((uint8_t*)message)[i]);
 	}
-	mark(TOSHIBA_BIT_MARK);
+	sender.mark(TOSHIBA_BIT_MARK);
 }
 void Toshiba::sendByte(uint8_t byte)
 {
@@ -75,13 +75,13 @@ void Toshiba::sendByte(uint8_t byte)
 		if ((byte & 0x80)>0) {
 
 
-			mark(TOSHIBA_BIT_MARK);
-			space(TOSHIBA_ONE_SPACE);
+			sender.mark(TOSHIBA_BIT_MARK);
+			sender.space(TOSHIBA_ONE_SPACE);
 		}
 		else {
 
-			mark(TOSHIBA_BIT_MARK);
-			space(TOSHIBA_ZERO_SPACE);
+			sender.mark(TOSHIBA_BIT_MARK);
+			sender.space(TOSHIBA_ZERO_SPACE);
 		}
 		byte = byte << 1;
 	}
