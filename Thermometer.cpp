@@ -1,6 +1,3 @@
-// 
-// 
-// 
 
 #include "Thermometer.h"
 /* temperature in celsius */

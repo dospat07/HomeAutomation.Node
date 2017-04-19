@@ -1,5 +1,7 @@
-// Engine.h
+ 
 
+#include <ESP8266WebServer.h>
+#include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
@@ -35,7 +37,8 @@ private :
 	Remote* remote;
 	void onTemperature();
 	void onCondirionerCommand();
-	void badRequest(String msg);
+	void badRequest();
+	 
 	
 	
 };
