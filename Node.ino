@@ -4,6 +4,7 @@
  Author:	ivo
 */
 
+#include "Thermometer.h"
 #include "RemoteFactory.h"
  
 #include <DallasTemperature.h>
@@ -12,15 +13,20 @@
 #include <ESP8266WiFi.h>
 #include "Engine.h"
 
+#define CONDITIONER DAIKIN
+//#define CONDITIONER TOSHIBA
 const char *ssid = "SSID1";
 const char *password = "7402186329";
-Engine engine(80, 5);
+
+
+Remote *rc = RemoteFactory::Create(CONDITIONER, 2);
+Thermometer *t = new Thermometer(5);
+Engine engine(80, t,rc);
 
 void setup() {
 	Serial.begin(115200);
 	WiFi.begin(ssid, password);
-	Serial.println("");
-
+	Serial.println("Connecting");
 	// Wait for connection
 	while (WiFi.status() != WL_CONNECTED) {
 		delay(500);

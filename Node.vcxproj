@@ -87,6 +87,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="IRSender.h" />
     <ClInclude Include="RemoteFactory.h" />
+    <ClInclude Include="Thermometer.h" />
     <ClInclude Include="Toshiba.h" />
     <ClInclude Include="__vm\.HomeAutomation.Node.vsarduino.h" />
     <ClInclude Include="__vm\.Node.vsarduino.h" />
@@ -95,7 +96,7 @@
     <ClCompile Include="Daikin.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="IRSender.cpp" />
-    <ClCompile Include="RemoteFactory.cpp" />
+    <ClCompile Include="Thermometer.cpp" />
     <ClCompile Include="Toshiba.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

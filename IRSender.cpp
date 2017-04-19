@@ -18,10 +18,6 @@ uint32_t ICACHE_FLASH_ATTR IRtimer::elapsed() {
 }
 
 
-
-
-
-
 void ICACHE_FLASH_ATTR IRSender::mark(unsigned int usec) {
 	// Sends an IR mark for the specified number of microseconds.
 	// The mark output is modulated at the PWM frequency.
@@ -52,7 +48,6 @@ void ICACHE_FLASH_ATTR IRSender::space(unsigned long time) {
 		delayMicroseconds((int)time % 1000UL);  // Delay the remaining sub-msecond.
 	}
 }
-
 
 void ICACHE_FLASH_ATTR IRSender::enableIROut(int khz) {
 
