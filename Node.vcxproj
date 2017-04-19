@@ -82,6 +82,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IRTimer.h" />
     <ClInclude Include="Remote.h" />
     <ClInclude Include="Daikin.h" />
     <ClInclude Include="Engine.h" />
@@ -96,6 +97,7 @@
     <ClCompile Include="Daikin.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="IRSender.cpp" />
+    <ClCompile Include="IRTimer.cpp" />
     <ClCompile Include="Thermometer.cpp" />
     <ClCompile Include="Toshiba.cpp" />
   </ItemGroup>

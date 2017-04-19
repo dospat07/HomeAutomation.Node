@@ -45,6 +45,9 @@
     <ClInclude Include="Thermometer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IRTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -60,6 +63,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Thermometer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IRTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

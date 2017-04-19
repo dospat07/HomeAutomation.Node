@@ -1,5 +1,5 @@
 #pragma once
-
+#include "IRTimer.h"
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "arduino.h"
 #else
@@ -7,21 +7,9 @@
 #endif
 #include "stdint.h"
 
-
- 
-class IRtimer {
-public:
-	IRtimer();
-	void reset();
-	uint32_t elapsed();
-private:
-	uint32_t start;
-};
-
 class IRSender
 {
 public:
-	 
 	IRSender(int pin) : IRpin(pin) {};
 	void enableIROut(int khz);
 	void mark(unsigned int usec);
@@ -29,9 +17,6 @@ public:
 private :
 	int halfPeriodicTime;
 	int IRpin ;
- 
-
-
 };
 
 

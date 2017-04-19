@@ -4,6 +4,7 @@
  Author:	ivo
 */
 
+#include "IRTimer.h"
 #include "Thermometer.h"
 #include "RemoteFactory.h"
  
