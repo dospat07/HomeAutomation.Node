@@ -11,7 +11,22 @@ Toshiba::Toshiba(int IRpin) :message(
 
 void Toshiba::set(Mode mode, Fan fan,byte temp)
 {
+	uint16_t data = 0;
+	switch (mode)
+	{
+	case OFF:send(0);return;
+		 
+	case HEAT:data = 3;
+		break;
+	case COOL:data = 1;
+		break;
+	default:
+		break;
+	}
+	if (fan > FAN3) fan = FAN3;
+	data = ((fan << 6 || data)<<8)||((temp-17)*16+1);
 
+	send(data);
 }
 
 //
