@@ -18,7 +18,10 @@ const char *password = "7402186329";
 Engine engine(80, new Thermometer(DS1820_PIN), RemoteFactory::Create(CONDITIONER, IR_PIN));
 
 void setup() {
+	pinMode(IR_PIN, OUTPUT);
+	digitalWrite(IR_PIN, LOW);
 	Serial.begin(115200);
+	
 	connect();
 	engine.start();
 }

@@ -54,7 +54,8 @@
 
 	void Daikin::set(Mode mode, Fan fan, byte temp)
 	{
-		byte _mode = B10000000;
+		
+		byte _mode = B00000000;
 		switch (mode)
 		{
 		case OFF:_mode =  B00000000;
@@ -77,19 +78,19 @@
 		byte _fan = B01010000;
 		switch (fan)
 		{
-		case AUTO:_fan = B01010000;
+		case AUTO:_fan = B00000101;
 			break;
-		case FAN1:_fan = B11010000;
+		case FAN1:_fan = B00001101;
 			break;
-		case FAN2:_fan = B11000000;
+		case FAN2:_fan = B00001100;
 			break;
-		case FAN3:_fan = B00100000;
+		case FAN3:_fan = B00000010;
 			break;
-		case FAN4:_fan = B10100000;
+		case FAN4:_fan = B00001010;
 			break;
-		case FAN5:_fan = B01100000;
+		case FAN5:_fan = B00000110;
 			break;
-		case FAN6:_fan = B11100000;
+		case FAN6:_fan = B00001110;
 			break;
 		default:
 			break;
@@ -98,9 +99,13 @@
 		this->message[24] = this->message[24] & B11110000; // clear 
 		this->message[24] = this->message[24] | (B00001111 & _fan);
 
+		byte t = reverse(temp) >>1;
 		/*  Tempertature*/
-		this->message[22] = reverse(temp)>>2;
+		this->message[22] = t;
 
+		Serial.print("Mode "); Serial.println(_mode);
+		Serial.print("Fan "); Serial.println(_fan);
+		Serial.print("Temp "); Serial.println(t);
 		/*  Powerfull   */
 		//this->message[29] = this->message[29] & B01111111; // clear 
 		//this->message[29] = this->message[29] | (B10000000 & data);

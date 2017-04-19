@@ -10,7 +10,10 @@
 class IRSender
 {
 public:
-	IRSender(int pin) : IRpin(pin) {};
+	IRSender(int pin) : IRpin(pin) 
+	{
+	 	
+	};
 	void enableIROut(int khz);
 	void mark(unsigned int usec);
 	void space(unsigned long time);
