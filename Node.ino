@@ -15,8 +15,8 @@
 const char *ssid = "SSID1";
 const char *password = "7402186329";
 
-Engine engine(80, new Thermometer(DS1820_PIN), RemoteFactory::Create(CONDITIONER, IR_PIN));
-
+//Engine engine(80, new Thermometer(DS1820_PIN), RemoteFactory::Create(CONDITIONER, IR_PIN));
+Engine engine(80, new Thermometer(DS1820_PIN), IR_PIN);
 void setup() 
 {
 	pinMode(IR_PIN, OUTPUT);

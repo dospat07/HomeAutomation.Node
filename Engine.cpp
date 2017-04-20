@@ -2,7 +2,7 @@
 #include "Engine.h"
 #include <ESP8266WebServer.h>
 #include "RemoteFactory.h"
- 
+ /*
 Engine::Engine(int port, Thermometer * thermometer, Remote* remote)
 {
 	this->remote = remote;
@@ -12,7 +12,7 @@ Engine::Engine(int port, Thermometer * thermometer, Remote* remote)
 	this->server->on("/AirCond", HTTPMethod::HTTP_POST, [this]() {  onCondirionerCommand(); });
 	this->server->onNotFound([this]() {badRequest();});
 
-}
+}*/
 Engine::Engine(int port, Thermometer * thermometer, int IRpin)
 {
 	this->server = new ESP8266WebServer(port);
@@ -39,13 +39,13 @@ void Engine::onTemperature()
 
 void Engine::onCondirionerCommand()
 {
-	String message = "\nParameters: ";
+	String message = "\n\rParameters: ";
 	message += this->server->args();
-	message += "\n";
-	message += "mode " + this->server->arg("mode") + "\n";
-	message += "fan " + this->server->arg("fan") + "\n";
-	message += "temp " + this->server->arg("temp") + "\n";
-	message += "model " + this->server->arg("model") + "\n";
+	message += "\n\r";
+	message += "mode " + this->server->arg("mode") + "\n\r";
+	message += "fan " + this->server->arg("fan") + "\n\r";
+	message += "temp " + this->server->arg("temp") + "\n\r";
+	message += "model " + this->server->arg("model") + "\n\r";
 	Serial.println(message);
 
 	Mode mode = static_cast<Mode> (this->server->arg("mode").toInt());
