@@ -31,9 +31,10 @@ void Engine::start()
 void Engine::onTemperature()
 {
 	String temperature = String(this->thermometer->temperature(), 1);
+	String response = "{""temperature"":" + temperature + "}";
 	Serial.print("Temperature :");
 	Serial.println(temperature);
-	this->server->send(200, "text/plain", temperature);
+	this->server->send(200, "text/plain", response);
 }
 
 void Engine::onCondirionerCommand()
