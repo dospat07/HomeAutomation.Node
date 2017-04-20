@@ -20,11 +20,12 @@ class Engine {
 public:
 	//Engine(int port, int ds1820pin,Remote* remote
 	Engine(int port, Thermometer * thermometer, Remote* remote);
+	Engine(int port, Thermometer * thermometer, int IRpin);
 	void start();
 	void loop();
 	
 private :
-
+	int irPin;
 
 	//// Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 	//OneWire *oneWire;

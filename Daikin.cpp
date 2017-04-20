@@ -22,7 +22,6 @@ void Daikin::set(Mode mode, Fan fan, byte temp)
 	setFan(fan);
 	setTemp(temp);
 
-
 	this->calcCRC(16, 18);
 	this->send();
 }
