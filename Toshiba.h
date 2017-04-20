@@ -23,7 +23,7 @@ public:
 	void send(uint16_t data);
 
 private:
-	void send();
+	 
 	uint8_t message[13];
 	void prepareMessage(uint16_t data);
 	void sendPart();

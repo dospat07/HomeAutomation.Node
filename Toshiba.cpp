@@ -3,7 +3,6 @@
 Toshiba::Toshiba(int IRpin) :message(
 {
 	//0xF2, 0x0D, 0x03, 0xFC, 0x01, 0x51, 0x03, 0x00, 0x53 //Heat22Auto
-
 	0xF2, 0x0D, 0x07, 0xF8, 0x01, 0x74, 0x07, 0x00, 0x55, 0x3C, 0x01, 0x02, 0x18 //OFF
 }),Remote(IRpin)
 {
@@ -25,7 +24,8 @@ void Toshiba::set(Mode mode, Fan fan,byte temp)
 	}
 	if (fan > FAN3) fan = FAN3;
 	data = ((fan << 6 || data)<<8)||((temp-17)*16+1);
-
+	Serial.println("Toshiba set");
+	Serial.print("data ");Serial.println(data);
 	send(data);
 }
 
@@ -38,7 +38,6 @@ void Toshiba::set(Mode mode, Fan fan,byte temp)
 // byte 5 -temperature
 // byte 6 mode&fan
 //
-
 void Toshiba::prepareMessage(uint16_t data)
 {
 	if (data > 0)
@@ -66,16 +65,12 @@ void Toshiba::prepareMessage(uint16_t data)
 void Toshiba::send(uint16_t data)
 {
 	prepareMessage(data);
-	send();
-}
-void Toshiba::send()
-{
-	 
 	sender.enableIROut(38);
 	sendPart();
 	delayMicroseconds(TOSHIBA_HDR_DELAY);
 	sendPart();
 }
+ 
 void Toshiba::sendPart( )
 {
 	sender.mark(TOSHIBA_HDR_MARK);
@@ -86,19 +81,18 @@ void Toshiba::sendPart( )
 	}
 	sender.mark(TOSHIBA_BIT_MARK);
 }
+
 void Toshiba::sendByte(uint8_t byte)
 {
 	for (int i = 0; i < 8; i++)
 	{
-
-		if ((byte & 0x80)>0) {
-
-
+		if ((byte & 0x80)>0) 
+		{
 			sender.mark(TOSHIBA_BIT_MARK);
 			sender.space(TOSHIBA_ONE_SPACE);
 		}
-		else {
-
+		else 
+		{
 			sender.mark(TOSHIBA_BIT_MARK);
 			sender.space(TOSHIBA_ZERO_SPACE);
 		}

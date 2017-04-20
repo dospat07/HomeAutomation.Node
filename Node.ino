@@ -17,19 +17,20 @@ const char *password = "7402186329";
 
 Engine engine(80, new Thermometer(DS1820_PIN), RemoteFactory::Create(CONDITIONER, IR_PIN));
 
-void setup() {
+void setup() 
+{
 	pinMode(IR_PIN, OUTPUT);
 	digitalWrite(IR_PIN, LOW);
-	Serial.begin(115200);
-	
+
+	Serial.begin(115200);	
 	connect();
 	engine.start();
 }
 
 // the loop function runs over and over again until power down or reset
-void loop() {
+void loop() 
+{
 	engine.loop();
-
 }
 
 void connect()
@@ -41,7 +42,6 @@ void connect()
 		delay(500);
 		Serial.print(".");
 	}
-
 	Serial.println("");
 	Serial.print("Connected to ");
 	Serial.println(ssid);
