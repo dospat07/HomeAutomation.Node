@@ -19,6 +19,7 @@ protected:
 	IRSender sender;
 public:	
 	virtual void set(Mode mode, Fan fan, byte temp);
+	
 };
 
 #endif
