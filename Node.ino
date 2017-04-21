@@ -8,7 +8,7 @@
 #include "RemoteFactory.h"
 #include "Engine.h"
 
-#define IR_PIN 2     //GPIO 2
+#define IR_PIN 13    //GPIO 13
 #define DS1820_PIN 5 //GPIO 5
 #define CONDITIONER DAIKIN
 //#define CONDITIONER TOSHIBA

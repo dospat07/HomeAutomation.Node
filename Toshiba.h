@@ -20,12 +20,12 @@ public:
 
 	Toshiba(int IRpin);	
 	void set(Mode mode, Fan fan, byte temp);
-	void send(uint16_t data);
+	void send(byte mode,byte temp);
 
 private:
 	 
 	uint8_t message[13];
-	void prepareMessage(uint16_t data);
+	void prepareMessage(byte mode, byte temp);
 	void sendPart();
 	void sendByte(uint8_t byte);
 	void calcCRC();

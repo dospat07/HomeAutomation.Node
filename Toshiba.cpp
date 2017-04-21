@@ -10,23 +10,25 @@ Toshiba::Toshiba(int IRpin) :message(
 
 void Toshiba::set(Mode mode, Fan fan,byte temp)
 {
-	uint16_t data = 0;
+	if (fan > FAN3) fan = FAN3;
+	byte _mode = fan << 6;
+	byte _temp = (temp - 17) * 16 + 1;
 	switch (mode)
 	{
-	case OFF:send(0);return;
-		 
-	case HEAT:data = 3;
+	case OFF:_mode = 0;
 		break;
-	case COOL:data = 1;
+	case HEAT:_mode = _mode | 3;
+		break;
+	case COOL:_mode = _mode | 1;
 		break;
 	default:
+		_mode = 0;
 		break;
-	}
-	if (fan > FAN3) fan = FAN3;
-	data = ((fan << 6 || data)<<8)||((temp-17)*16+1);
-	Serial.println("Toshiba set");
-	Serial.print("data ");Serial.println(data);
-	send(data);
+	} 
+	Serial.println("Toshiba set");	 
+	Serial.print("Mode "); Serial.println(_mode, BIN);
+	Serial.print("Temp "); Serial.println(_temp, BIN);
+	send(_mode,_temp);
 }
 
 //
@@ -38,19 +40,19 @@ void Toshiba::set(Mode mode, Fan fan,byte temp)
 // byte 5 -temperature
 // byte 6 mode&fan
 //
-void Toshiba::prepareMessage(uint16_t data)
+void Toshiba::prepareMessage(byte mode,byte temp)
 {
-	if (data > 0)
+	if (mode > 0)
 	{
 		this->message[2] = 0x03;
 		this->message[3] = 0xF8;
-		this->message[5] = data;
-		this->message[6] = (data >> 8);
+		this->message[5] = temp;
+		this->message[6] = mode;
 		this->lenght = 9;
 		calcCRC();
 	}
 	else
-	{
+	{  // OFF
 		this->message[2] = 0x07;
 		this->message[3] = 0xFC;
 		this->message[5] = 0x74;
@@ -62,9 +64,9 @@ void Toshiba::prepareMessage(uint16_t data)
 	
 }
 
-void Toshiba::send(uint16_t data)
+void Toshiba::send(byte mode, byte temp)
 {
-	prepareMessage(data);
+	prepareMessage(mode,temp);
 	sender.enableIROut(38);
 	sendPart();
 	delayMicroseconds(TOSHIBA_HDR_DELAY);

@@ -18,7 +18,7 @@ Engine::Engine(int port, Thermometer * thermometer, int IRpin)
 	this->server = new ESP8266WebServer(port);
 	this->thermometer = thermometer;
 	this->server->on("/Temperature", [this]() {onTemperature(); });
-	this->server->on("/AirCond", HTTPMethod::HTTP_POST, [this]() {  onCondirionerCommand(); });
+	this->server->on("/Remote", HTTPMethod::HTTP_POST, [this]() {  onCondirionerCommand(); });
 	this->server->onNotFound([this]() {badRequest();});
 	this->irPin = IRpin;
 }
@@ -28,38 +28,57 @@ void Engine::start()
 	Serial.println("HTTP server started");
 }
 
+void Engine::showRequest()
+{
+
+	String message = "\n\rRequest ";
+	message += this->server->uri()+"\n\r";
+	for (int i = 0; i < this->server->args(); i++)
+	{
+		message += this->server->argName(i)+" " + this->server->arg(i)+"\n\r";
+	}
+	;
+	/*message += "\n\r";
+	message += "mode  " + this->server->arg("mode") 
+	message += "fan   " + this->server->arg("fan") + "\n\r";
+	message += "temp  " + this->server->arg("temp") + "\n\r";
+	message += "model " + this->server->arg("model") + "\n\r";*/
+	Serial.println(message);
+	 
+}
 void Engine::onTemperature()
 {
+	showRequest();
 	String temperature = String(this->thermometer->temperature(), 1);
-	String response = "{""temperature"":" + temperature + "}";
-	Serial.print("Temperature :");
-	Serial.println(temperature);
+	String response = "{\"temperature\":" + temperature + "}";
+	 
+	Serial.println(response);
 	this->server->send(200, "text/plain", response);
 }
 
 void Engine::onCondirionerCommand()
 {
-	String message = "\n\rParameters: ";
-	message += this->server->args();
-	message += "\n\r";
-	message += "mode " + this->server->arg("mode") + "\n\r";
-	message += "fan " + this->server->arg("fan") + "\n\r";
-	message += "temp " + this->server->arg("temp") + "\n\r";
-	message += "model " + this->server->arg("model") + "\n\r";
-	Serial.println(message);
-
+	showRequest();
 	Mode mode = static_cast<Mode> (this->server->arg("mode").toInt());
 	Fan fan = static_cast<Fan>(this->server->arg("fan").toInt());
 	int temp = this->server->arg("temp").toInt();
 	Conditioner conditioner = static_cast<Conditioner> (this->server->arg("model").toInt());
-
-	this->remote = RemoteFactory::Create(conditioner, irPin);
-	this->remote->set(mode, fan, temp);
-	delete this->remote;
-	this->server->send(200, "text/plain", message);
 	
-
-
+	String response = "mode " + String(mode);	 
+	response += " fan " + String(fan);
+	response += " temp " + String(temp);
+	response += " model " + String(conditioner);
+    this->remote = RemoteFactory::Create(conditioner, irPin);
+	if (remote != NULL ) {
+		this->remote->set(mode, fan, temp);
+		delete this->remote;
+		this->server->send(200, "text/plain", response);
+	}
+	else
+	{
+		badRequest();
+	}
+	
 }
 
 void Engine::badRequest()

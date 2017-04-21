@@ -39,7 +39,7 @@ private :
 	void onTemperature();
 	void onCondirionerCommand();
 	void badRequest();
-	 
+	void showRequest();
 	
 	
 };
