@@ -12,7 +12,7 @@
 #define TOSHIBA_BIT_MARK	500
 #define TOSHIBA_ONE_SPACE	1650
 #define TOSHIBA_ZERO_SPACE	550
-#define TOSHIBA_HDR_DELAY   5400
+#define TOSHIBA_HDR_DELAY   5500
 
 class Toshiba:public Remote	
 {
