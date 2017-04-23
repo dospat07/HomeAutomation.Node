@@ -45,7 +45,7 @@ void Toshiba::prepareMessage(byte mode,byte temp)
 	if (mode > 0)
 	{
 		this->message[2] = 0x03;
-		this->message[3] = 0xF8;
+		this->message[3] = 0xFC;
 		this->message[5] = temp;
 		this->message[6] = mode;
 		this->lenght = 9;
@@ -54,7 +54,7 @@ void Toshiba::prepareMessage(byte mode,byte temp)
 	else
 	{  // OFF
 		this->message[2] = 0x07;
-		this->message[3] = 0xFC;
+		this->message[3] = 0xF8;
 		this->message[5] = 0x74;
 		this->message[6] = 0x07;
 		this->message[8] = 0x55;
