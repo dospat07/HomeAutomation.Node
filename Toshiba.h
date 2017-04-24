@@ -8,11 +8,11 @@
 #include "Remote.h"
 
 #define TOSHIBA_HDR_MARK	4500
-#define TOSHIBA_HDR_SPACE	4450
-#define TOSHIBA_BIT_MARK	500
-#define TOSHIBA_ONE_SPACE	1650
-#define TOSHIBA_ZERO_SPACE	550
-#define TOSHIBA_HDR_DELAY   5500
+#define TOSHIBA_HDR_SPACE	4510
+#define TOSHIBA_BIT_MARK	520
+#define TOSHIBA_ONE_SPACE	1680
+#define TOSHIBA_ZERO_SPACE	572
+#define TOSHIBA_HDR_DELAY   5560
 
 class Toshiba:public Remote	
 {
