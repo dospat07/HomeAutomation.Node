@@ -108,7 +108,7 @@ void Toshiba::sendByte(uint8_t byte)
 void Toshiba::calcCRC()
 {
 	message[8] = 0;
-	for (int  i = 4; i < 8; i++)
+	for (int  i = 0; i < 8; i++)
 	{
 		message[8]  ^= message[i];
 	}
