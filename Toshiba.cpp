@@ -2,6 +2,8 @@
 
 Toshiba::Toshiba(int IRpin) :message(
 {
+	//0     1     2     3     4     5     6     7     8
+	//0xF2, 0x0D, 0x03, 0xFC, 0x01, 0x00, 0x00, 0x00, 0x00
 	//0xF2, 0x0D, 0x03, 0xFC, 0x01, 0x51, 0x03, 0x00, 0x53 //Heat22Auto
 	0xF2, 0x0D, 0x07, 0xF8, 0x01, 0x74, 0x07, 0x00, 0x55, 0x3C, 0x01, 0x02, 0x18 //OFF
 }),Remote(IRpin)
@@ -17,9 +19,9 @@ void Toshiba::set(Mode mode, Fan fan,byte temp)
 	{
 	case OFF:_mode = 0;
 		break;
-	case HEAT:_mode = _mode | 3;
+	case HEAT:_mode = _mode | B00000011;
 		break;
-	case COOL:_mode = _mode | 1;
+	case COOL:_mode = _mode | B00000001;
 		break;
 	default:
 		_mode = 0;
@@ -46,6 +48,7 @@ void Toshiba::prepareMessage(byte mode,byte temp)
 	{
 		this->message[2] = 0x03;
 		this->message[3] = 0xFC;
+		//this->message[4] = 0x0;
 		this->message[5] = temp;
 		this->message[6] = mode;
 		this->lenght = 9;
@@ -81,7 +84,7 @@ void Toshiba::sendPart( )
 	{
 		sendByte(((uint8_t*)message)[i]);
 	}
-	sender.mark(TOSHIBA_BIT_MARK);
+	sender.mark(TOSHIBA_END_MARK);
 }
 
 void Toshiba::sendByte(uint8_t byte)
