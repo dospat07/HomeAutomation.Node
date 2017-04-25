@@ -15,7 +15,8 @@ void Remote::set(Mode mode, Fan fan, byte temp)
 void Remote::printMessage()
 {
 #ifdef DEBUG_MESSAGE
-	Serial.println("Message : ");
+	Serial.println();
+	Serial.print(this->acName);Serial.println(" send message : ");
 	for (int i = 0; i < this->messageLenght; i++)
 	{
 		Serial.print(this->message[i], HEX); Serial.print(" ");

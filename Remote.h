@@ -16,13 +16,14 @@ enum Fan { AUTO=0, FAN1, FAN2, FAN3, FAN4, FAN5,FAN6};
 class Remote
 {
 public:
-	Remote(int IRpin,uint messageSize , uint8_t *pMessage) :sender(IRpin)
+	Remote(String name,int IRpin,uint messageSize , uint8_t *pMessage) :sender(IRpin)
 	{
 		this->message = &pMessage[0];
 		this->messageLenght = messageSize;
+		this->acName = name;
 	};
 protected:
-	
+	String acName;
 	IRSender sender;
 	uint messageLenght;
 	virtual void setMode(Mode mode) = 0;

@@ -1,7 +1,7 @@
 #include "Toshiba.h"
 
 
-Toshiba::Toshiba(int IRpin) : Remote(IRpin,TOSHIBA_MSG_LEN, this->messageTemplate)
+Toshiba::Toshiba(int IRpin) : Remote("Toshiba",IRpin,TOSHIBA_MSG_LEN, this->messageTemplate)
 {
 	//memcpy(this->message, this->messageTemplate, TOSHIBA_MSG_LEN);
 }

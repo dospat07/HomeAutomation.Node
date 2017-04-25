@@ -1,7 +1,7 @@
 #include "Daikin.h"
 
 
-Daikin::Daikin(int IRpin) : Remote(IRpin,DAIKIN_MSG_LEN, this->messageTemplate)
+Daikin::Daikin(int IRpin) : Remote("Daikin",IRpin,DAIKIN_MSG_LEN, this->messageTemplate)
 {  
 	//memcpy(this->message, this->messageTemplate, DAIKIN_MSG_LEN);
 };
@@ -135,7 +135,7 @@ uint8_t Daikin::reverse(uint8_t byte)
 
 void Daikin::send()
 {
-	Serial.println("Daikin send");
+	
 	sender.enableIROut(38);
 
 	sender.mark(DAIKIN_BIT_MARK);
