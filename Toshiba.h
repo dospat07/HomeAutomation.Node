@@ -31,21 +31,24 @@
 //#define HVAC_MISTUBISHI_ZERO_SPACE 472  
 //#define HVAC_TOSHIBA_RPT_MARK  440  
 //#define HVAC_TOSHIBA_RPT_SPACE  7048 // Above original iremote limit  
+#define TOSHIBA_MSG_LEN 9
 class Toshiba:public Remote	
 {
 public:
 
 	Toshiba(int IRpin);	
-	void set(Mode mode, Fan fan, byte temp);
-	void send(byte mode,byte temp);
-
+		
 private:
-	 
-	uint8_t message[13];
-	void prepareMessage(byte mode, byte temp);
+	uint8_t messageTemplate[TOSHIBA_MSG_LEN] ={ 0xF2, 0x0D, 0x03, 0xFC, 0x01, 0x00, 0x00, 0x00, 0x00 }; 
+	void setMode(Mode mode);
+	void setFan(Fan fan);
+	void setTemp(byte temp);
+	void send();
+	void setPowerfull(bool powerfull);
+	//uint8_t message[TOSHIBA_MGS_LEN];
 	void sendPart();
-	void sendByte(uint8_t byte);
+	//void sendByte(uint8_t byte);
 	void calcCRC();
-    uint8_t lenght;
+    
 };
 

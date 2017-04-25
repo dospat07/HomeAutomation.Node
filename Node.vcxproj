@@ -102,6 +102,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="IRSender.cpp" />
     <ClCompile Include="IRTimer.cpp" />
+    <ClCompile Include="Remote.cpp" />
     <ClCompile Include="Thermometer.cpp" />
     <ClCompile Include="Toshiba.cpp" />
   </ItemGroup>

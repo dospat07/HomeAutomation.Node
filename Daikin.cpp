@@ -1,30 +1,12 @@
 #include "Daikin.h"
 
-Daikin::Daikin(int IRpin) : message(
-{
-	  0x88, 0x5B, 0xE4, 0x00, 0xA3, 0x00, 0x00, 0xEB,
-	  0x88, 0x5B, 0xE4, 0x00, 0x42, 0x51, 0x20, 0x47,
-	  0x88, 0x5B, 0xE4, 0x00, 0x00, 0x12, 0x4C, 0x00, 0x05, 0x00, 0x00, 0x60, 0x06, 0x00, 0x00, 0x03, 0x00, 0x00, 0x4A
-	  /*
-	  0x88, 0x5B, 0xE4, 0x00, 0xA3, 0x00, 0x00, 0xEB,
-	  0x88, 0x5B, 0xE4, 0x00, 0x42, 0x23, 0x80, 0x98,
-	  0x88, 0x5B, 0xE4, 0x00, 0x00, 0x92, 0x44, 0x00, 0x05, 0x00, 0x00, 0x60, 0x06, 0x00, 0x00, 0x03, 0x00, 0x00, 0xC2 */
-}), Remote(IRpin)
-{};
 
-/*
- settings from https://jamesstewy.com/blog/post/8/
-*/
-void Daikin::set(Mode mode, Fan fan, byte temp)
-{
-	Serial.println("Daikin set");
-	setMode(mode);
-	setFan(fan);
-	setTemp(temp);
+Daikin::Daikin(int IRpin) : Remote(IRpin,DAIKIN_MSG_LEN, this->messageTemplate)
+{  
+	//memcpy(this->message, this->messageTemplate, DAIKIN_MSG_LEN);
+};
 
-	this->calcCRC(16, 18);
-	this->send();
-}
+
 
 /*
 on / off byte21 / b7
@@ -60,7 +42,7 @@ void Daikin::setMode(Mode mode)
 	this->message[21] = this->message[21] & B11110001; // clear 
 	this->message[21] = this->message[21] | (B00001110 & _mode);
 
-	Serial.print("Mode "); Serial.println(_mode,BIN);
+	Serial.print("Mode "); Serial.println(_mode, BIN);
 }
 
 /*
@@ -99,7 +81,7 @@ void Daikin::setFan(Fan fan)
 	this->message[24] = this->message[24] & B11110000; // clear 
 	this->message[24] = this->message[24] | (B00001111 & _fan);
 
-	Serial.print("Fan "); Serial.println(_fan,BIN);
+	Serial.print("Fan "); Serial.println(_fan, BIN);
 }
 
 /*
@@ -115,7 +97,7 @@ void Daikin::setTemp(byte temp)
 	byte t = reverse(temp) >> 1;
 	/*  Tempertature*/
 	this->message[22] = t;
-	Serial.print("Temp "); Serial.println(t,BIN);
+	Serial.print("Temp "); Serial.println(t, BIN);
 }
 
 /*
@@ -123,7 +105,7 @@ powerfull byte29/bit7
 0 - off
 1 - on
 */
-void Daikin::setPowrfull(bool powerfull)
+void Daikin::setPowerfull(bool powerfull)
 {
 	/*  Powerfull   */
 	this->message[29] = this->message[29] & B01111111; // clear 
@@ -153,6 +135,7 @@ uint8_t Daikin::reverse(uint8_t byte)
 
 void Daikin::send()
 {
+	Serial.println("Daikin send");
 	sender.enableIROut(38);
 
 	sender.mark(DAIKIN_BIT_MARK);
@@ -173,70 +156,40 @@ void Daikin::sendPart(void* data, uint8_t position, uint8_t lenght)
 	sender.space(DAIKIN_HDR_SPACE);
 	for (int i = position; i < position + lenght; i++)
 	{
-		sendByte(((uint8_t*)data)[i]);
+		//sendByte(((uint8_t*)data)[i]);
+		this->sendByte(message[i], DAIKIN_BIT_MARK, DAIKIN_ONE_SPACE, DAIKIN_ZERO_SPACE);
 	}
 	sender.mark(DAIKIN_BIT_MARK);
 }
 
-void Daikin::sendByte(uint8_t byte)
-{
-	for (int i = 0; i < 8; i++)
-	{
-		if ((byte & 0x80) > 0)
-		{
-			sender.mark(DAIKIN_BIT_MARK);
-			sender.space(DAIKIN_ONE_SPACE);
-		}
-		else
-		{
-			sender.mark(DAIKIN_BIT_MARK);
-			sender.space(DAIKIN_ZERO_SPACE);
-		}
-		byte = byte << 1;
-	}
-}
 
-void Daikin::calcCRC(uint8_t start, uint8_t len)
+void Daikin::calcCRC()
 {
 	uint16_t crc = 0;
-	for (uint8_t i = start; i < start + len; i++)
+	for (uint8_t i = 16; i < this->messageLenght - 1; i++)
 	{
 		crc += this->reverse(this->message[i]);
 	}
-	this->message[start + len] = this->reverse(crc);
+	this->message[this->messageLenght - 1] = this->reverse(crc);
 }
 
-/*
 
-void Daikin::send(uint16_t data)
-{
-prepareMessage(data);
-send();
-}
 
-void Daikin::prepareMessage(uint16_t data)
-{
-uint8_t byte = data >> 8;
-// ON/OF
-this->message[21] = this->message[21] & B01111111; // clear
-this->message[21] = this->message[21] | (B10000000 & byte);
+//void Daikin::sendByte(uint8_t byte)
+//{
+//	for (int i = 0; i < 8; i++)
+//	{
+//		if ((byte & 0x80) > 0)
+//		{
+//			sender.mark(DAIKIN_BIT_MARK);
+//			sender.space(DAIKIN_ONE_SPACE);
+//		}
+//		else
+//		{
+//			sender.mark(DAIKIN_BIT_MARK);
+//			sender.space(DAIKIN_ZERO_SPACE);
+//		}
+//		byte = byte << 1;
+//	}
+//}
 
-//  MODE
-this->message[21] = this->message[21] & B11110001; // clear
-this->message[21] = this->message[21] | (B00001110 & (byte >> 3));
-
-//  Tempertature
-this->message[22] = data & 0x7F;
-
-//  FAN
-this->message[24] = this->message[24] & B11110000; // clear
-this->message[24] = this->message[24] | (B00001111 & byte);
-
-//  Powerfull
-this->message[29] = this->message[29] & B01111111; // clear
-this->message[29] = this->message[29] | (B10000000 & data);
-
-this->calcCRC(16, 18);
-
-}
-*/
