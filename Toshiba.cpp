@@ -18,7 +18,7 @@ Toshiba::Toshiba(int IRpin) : Remote("Toshiba",IRpin,TOSHIBA_MSG_LEN, this->mess
 //
 void Toshiba::send()
 {
-	Serial.println("Toshiba send");
+	
 	sender.enableIROut(38);
 	sendPart();
 	delayMicroseconds(TOSHIBA_HDR_DELAY);

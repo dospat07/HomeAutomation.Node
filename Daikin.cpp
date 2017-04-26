@@ -42,7 +42,7 @@ void Daikin::setMode(Mode mode)
 	this->message[21] = this->message[21] & B11110001; // clear 
 	this->message[21] = this->message[21] | (B00001110 & _mode);
 
-	Serial.print("Mode "); Serial.println(_mode, BIN);
+	//Serial.print("Mode "); Serial.println(_mode, BIN);
 }
 
 /*
@@ -81,7 +81,7 @@ void Daikin::setFan(Fan fan)
 	this->message[24] = this->message[24] & B11110000; // clear 
 	this->message[24] = this->message[24] | (B00001111 & _fan);
 
-	Serial.print("Fan "); Serial.println(_fan, BIN);
+	//Serial.print("Fan "); Serial.println(_fan, BIN);
 }
 
 /*
@@ -97,7 +97,7 @@ void Daikin::setTemp(byte temp)
 	byte t = reverse(temp) >> 1;
 	/*  Tempertature*/
 	this->message[22] = t;
-	Serial.print("Temp "); Serial.println(t, BIN);
+	//Serial.print("Temp "); Serial.println(t, BIN);
 }
 
 /*
