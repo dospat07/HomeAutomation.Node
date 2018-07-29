@@ -35,7 +35,9 @@ void loop()
 
 void connect()
 {
+
 	Serial.println("Connecting ");
+	// disable Access Point on esp
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(ssid, password);
 	// Wait for connection
